@@ -10,16 +10,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/inputText"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="sumbit"
         android:id="@+id/sumbit"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="47dp"
-        android:layout_below="@+id/inputText" />
+        android:onClick="submit"
+        android:layout_below="@+id/inputText"
+        android:layout_toRightOf="@+id/inputText"
+        android:layout_toEndOf="@+id/inputText"
+        android:layout_marginLeft="58dp"
+        android:layout_marginStart="58dp" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -27,6 +30,25 @@
         android:text="hide"
         android:id="@+id/hideCheckBox"
         android:layout_below="@+id/sumbit"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignRight="@+id/sumbit"
+        android:layout_alignEnd="@+id/sumbit" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/historyListView"
+        android:layout_below="@+id/hideCheckBox"
+        android:layout_toRightOf="@+id/inputText"
+        android:layout_toEndOf="@+id/inputText" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/storeInfoSpinner"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/hideCheckBox"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/sumbit" />
 
 </RelativeLayout>
