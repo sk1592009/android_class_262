@@ -34,6 +34,6 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return "";//,如果是新的app,用null會容易有錯誤,所以用空字串
     }
 }

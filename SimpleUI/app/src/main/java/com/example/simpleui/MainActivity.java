@@ -1,6 +1,7 @@
 package com.example.simpleui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -95,5 +96,13 @@ public class MainActivity extends AppCompatActivity {
 //        String fileContent = Utils.readFile(this, "history.txt");//讀檔
 //        Toast.makeText(this, fileContent, Toast.LENGTH_LONG).show();
         setHistory();
+    }
+
+
+
+    public void goToMenu(View view){
+        Intent intent = new Intent();
+        intent.setClass(this,DrinkMenuActivity.class);//要前往的activity
+        startActivity(intent);
     }
 }
