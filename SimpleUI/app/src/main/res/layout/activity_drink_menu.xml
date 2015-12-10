@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="15dp"
-    android:id="@+id/root">
+    android:id="@+id/root"
+    android:onClick="done">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -115,7 +116,8 @@
             android:layout_height="wrap_content"
             android:text="DONE"
             android:id="@+id/button9"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="done"/>
     </LinearLayout>
 
 </LinearLayout>

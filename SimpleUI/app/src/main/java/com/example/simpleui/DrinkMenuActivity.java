@@ -1,5 +1,6 @@
 package com.example.simpleui;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -38,6 +39,14 @@ public class DrinkMenuActivity extends ActionBarActivity {
         number++;
         button.setText(String.valueOf(number));
     }
+
+    public void done(View view){
+        JSONArray jsonData = getData();
+        Intent data = new Intent();
+        data.putExtra("result", jsonData.toString());//name是所引值
+        setResult(RESULT_OK, data);// 告訴結果的動作
+        finish();//把activity結束,會到MainActivity的onActivityResult
+    }
       /*JASON Array
     *[{"name": "black tea", "l": "2", "m": "0"},
     * {"name": "milk tea", "l": "10", "m": "3"},
@@ -62,10 +71,10 @@ public class DrinkMenuActivity extends ActionBarActivity {
 
             try{
                 JSONObject object = new JSONObject();
-                object.put("name", drinkName);
+                object.put("name", drinkName);//json值傳入
                 object.put("l", lNumber);
                 object.put("m", mNumber);
-                array.put(object);
+                array.put(object);//把json存進陣列
             }catch (JSONException e){
                 e.printStackTrace();
             }
