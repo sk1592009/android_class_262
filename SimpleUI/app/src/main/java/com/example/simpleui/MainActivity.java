@@ -1,8 +1,12 @@
 package com.example.simpleui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,11 +14,14 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -22,6 +29,7 @@ import android.widget.Toast;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
@@ -39,15 +47,19 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_MENU_ACTIVITY = 1;
+    private static final int REQUEST_TAKE_PHOTO = 2;
     private EditText inputText;
     private CheckBox hideCheckBox;
     private ListView historyListView;
     private Spinner storeInfoSpinner;//宣告下拉是選單
-
+    private ImageView photoImageView;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-
+    private ProgressDialog progressDialog;
+    private ProgressBar progressBar;
     private String menuResult;
+    private boolean hasPhoto = false;
+    private List<ParseObject> queryResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);// sharedPreferences會儲存你上次所輸入的資料
         editor = sharedPreferences.edit();
-
+        photoImageView = (ImageView) findViewById(R.id.photo);
         inputText = (EditText)findViewById(R.id.inputText);//去R裡面找Id是inputText
 //        inputText.setText("1234");//設定inputText的值
         inputText.setText(sharedPreferences.getString("inputText", ""));
@@ -95,8 +107,24 @@ public class MainActivity extends AppCompatActivity {
         hideCheckBox.setChecked(sharedPreferences.getBoolean("hideCheckBox", false));
 
         historyListView = (ListView) findViewById(R.id.historyListView);//ListView是一個動態狀態
+        historyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                goToOrderDetail(position);
+            }
+        });
+        progressDialog = new ProgressDialog(this);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         setHistory();
         setStoreInfo();//設定選單裡的資料
+    }
+
+    private void goToOrderDetail(int position) {
+        Intent intent = new Intent();
+        intent.setClass(this, OrderDetailActivity.class);
+        ParseObject object = queryResult.get(position);
+        intent.putExtra("note", object.getString("note"));
+        startActivity(intent);
     }
 
     private void setStoreInfo() {
@@ -127,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
+                queryResult = objects;
                 List<Map<String, String>> data = new ArrayList<>();//data的定義 list裡面的每個元件是map, map裡面讓他string對到string
         /*Map
                 "name" -> "Tom"
@@ -151,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
                 SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, data, R.layout.listview_item, from, to);
 
                 historyListView.setAdapter(adapter);
+                historyListView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
         });
 //        String[] data = new String[]{"1","2","3","4","5","6","7","8","9","10"};//做一個陣列
@@ -195,6 +226,10 @@ public class MainActivity extends AppCompatActivity {
  */
 
     public void submit(View view){
+
+        progressDialog.setTitle("Loading...");//秀出還在Loading,並不能做其他事情
+        progressDialog.show();
+
         String text = inputText.getText().toString();//先拿到資料,再將資料轉為字串
         // String text = inputText.getText().toString() + "," +menuResult;
         editor.putString("inputText", text);//在sharedPreferences裡面存inputText的內容
@@ -212,9 +247,15 @@ public class MainActivity extends AppCompatActivity {
             ParseObject orderObject = new ParseObject("Order");//定義class名稱
             orderObject.put("note", text);//定義欄位名稱和值
             orderObject.put("menu", array);
+            if(hasPhoto == true){
+                Uri uri = Utils.getPhotoUri();
+                ParseFile parseFile = new ParseFile("photo.png", Utils.uriToBytes(this, uri));
+                orderObject.put("photo", parseFile);
+            }
             orderObject.saveInBackground(new SaveCallback() {//會很順的送出,不需等回傳
                 @Override
                 public void done(ParseException e) {
+                    progressDialog.dismiss();
                     Log.d("debug", "line:167");
                     if (e == null){
                         Toast.makeText(MainActivity.this, "[SaveCallback] ok.", Toast.LENGTH_SHORT).show();
@@ -267,6 +308,14 @@ public class MainActivity extends AppCompatActivity {
 //                Log.d("debug", result);
                 menuResult = data.getStringExtra("result");
             }
+        } else if (requestCode == REQUEST_TAKE_PHOTO){
+            if(resultCode == RESULT_OK){
+                //Bitmap bm = data.getParcelableExtra("data");//會把圖片存在這data中
+                //photoImageView.setImageBitmap(bm);
+                Uri uri = Utils.getPhotoUri();
+                photoImageView.setImageURI(uri);//從uri拿照片
+                hasPhoto = true;//判斷照相是否成功
+            }
         }
     }
 
@@ -281,7 +330,17 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_take_photo){
             Toast.makeText(this, "take photo", Toast.LENGTH_SHORT).show();
+            goToCamera();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToCamera(){
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoUri());
+        startActivityForResult(intent, REQUEST_TAKE_PHOTO);//確認好相片,會跳回來
+
+
     }
 }

@@ -1,4 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">SimpleUI</string>
     <string name="title_activity_drink_menu">DrinkMenuActivity</string>
+    <string name="title_activity_order_detail">OrderDetailActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>
