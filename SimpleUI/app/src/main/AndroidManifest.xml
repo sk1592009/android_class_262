@@ -34,7 +34,8 @@
         </activity>
         <activity
             android:name=".OrderDetailActivity"
-            android:label="@string/title_activity_order_detail" >
+            android:label="@string/title_activity_order_detail"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 

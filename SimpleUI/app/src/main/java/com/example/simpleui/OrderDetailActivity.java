@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-
 public class OrderDetailActivity extends AppCompatActivity {
 
     @Override
@@ -26,8 +25,8 @@ public class OrderDetailActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
+        String note = getIntent().getStringExtra("note");
+        Log.d("debug", note);
     }
-    String note = getIntent().getStringExtra("note");
-    Log.d("debug", note);
+
 }
