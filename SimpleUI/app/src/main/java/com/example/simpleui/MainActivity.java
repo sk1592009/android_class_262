@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setClass(this, OrderDetailActivity.class);
         ParseObject object = queryResult.get(position);
+        intent.putExtra("storeInfo", object.getString("storeInfo"));//讀取
         intent.putExtra("note", object.getString("note"));
         startActivity(intent);
     }
@@ -165,13 +166,13 @@ public class MainActivity extends AppCompatActivity {
                 for (int i =0 ; i < objects.size(); i++){
                     ParseObject object = objects.get(i);
                     String note = object.getString("note");
+                    String storeInfo = object.getString("storeInfo");
                     JSONArray array = object.getJSONArray("menu");
 
                     Map<String, String> item = new HashMap<>();
                     item.put("note", note);
                     item.put("drinkNum", "15");
-
-                    item.put("storeInfo", "NTU Store");
+                    item.put("storeInfo", storeInfo);
 
                     data.add(item);
                 }
@@ -243,9 +244,11 @@ public class MainActivity extends AppCompatActivity {
             orderData.put("note", text);
             orderData.put("menu", array);
             Utils.writeFile(this, "history.txt", orderData.toString() +"\n");
+
             //新增parse的object
             ParseObject orderObject = new ParseObject("Order");//定義class名稱
             orderObject.put("note", text);//定義欄位名稱和值
+            orderObject.put("storeInfo", storeInfoSpinner.getSelectedItem());//寫入的地方
             orderObject.put("menu", array);
             if(hasPhoto == true){
                 Uri uri = Utils.getPhotoUri();
