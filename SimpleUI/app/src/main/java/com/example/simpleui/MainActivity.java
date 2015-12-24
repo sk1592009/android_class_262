@@ -68,14 +68,18 @@ public class MainActivity extends AppCompatActivity {
 
 //        //新增parse的object
 //        ParseObject testObject = new ParseObject("People");//定義class名稱
-//        testObject.put("name", "Tom");//定義蘭為名稱和值
+//        testObject.put("name", "Tom");//定義欄位名稱和值
 //        testObject.put("age", "23");
 //        testObject.saveInBackground();
 
         setContentView(R.layout.activity_main);
         storeInfoSpinner = (Spinner) findViewById(R.id.storeInfoSpinner);
 
-        sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);// sharedPreferences會儲存你上次所輸入的資料
+        sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        // sharedPreferences會儲存你上次所輸入的資料
+        /*MODE_PRIVATE: 建立的 SharedPreferences 檔案只能讓目前的 App 讀寫 or
+        該檔案是私有的，其它應用程式都無法存取（預設值）。
+        */
         editor = sharedPreferences.edit();
         photoImageView = (ImageView) findViewById(R.id.photo);
         inputText = (EditText)findViewById(R.id.inputText);//去R裡面找Id是inputText
@@ -158,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
             public void done(List<ParseObject> objects, ParseException e) {
                 queryResult = objects;
                 List<Map<String, String>> data = new ArrayList<>();//data的定義 list裡面的每個元件是map, map裡面讓他string對到string
-        /*Map
+                /*Map
                 "name" -> "Tom"
                 "birthday" -> "19901010"
                 "sex" -> "M"
@@ -233,6 +237,13 @@ public class MainActivity extends AppCompatActivity {
 
         String text = inputText.getText().toString();//先拿到資料,再將資料轉為字串
         // String text = inputText.getText().toString() + "," +menuResult;
+
+        /*
+        寫入資料：
+        1.呼叫edit()方法來取得SharedPreferences.Editor物件。
+        2.將要寫入的資料透過呼叫方法來存入，如：putString()、putInt()。
+        3.呼叫commit()來交付資料。
+         */
         editor.putString("inputText", text);//在sharedPreferences裡面存inputText的內容
         editor.commit();
         //重組資訊  將menu和所輸入的值包在一起
@@ -247,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
 
             //新增parse的object
             ParseObject orderObject = new ParseObject("Order");//定義class名稱
+            // 每個JSONObject都能利用JSONObject.put(key, value)來增加屬性
             orderObject.put("note", text);//定義欄位名稱和值
             orderObject.put("storeInfo", storeInfoSpinner.getSelectedItem());//寫入的地方
             orderObject.put("menu", array);

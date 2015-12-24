@@ -55,6 +55,8 @@ public class Utils {
 
     public static Uri getPhotoUri() {//uri標準的識別符號
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        //getExternalStoragePublicDirectory取得外部儲存體存放公開檔案的目錄
+        //DIRECTORY_PICTURES: 一般的圖片檔
         if(dir.exists() == false){
             dir.mkdirs();//若沒有此資料夾,則新增一個料夾
         }
@@ -65,13 +67,13 @@ public class Utils {
     public static byte[] uriToBytes(Context context, Uri uri) {//把圖檔轉成byte,在傳上Parse,之後在從那拉下來
         try {
             InputStream is = context.getContentResolver().openInputStream(uri);//把圖檔餵進來
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len = 0;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();//暫存BYTE陣列
+            byte[] buffer = new byte[1024];//緩衝
+            int len = 0;//紀錄讀進來長度
             while ((len = is.read(buffer)) != -1){
-                baos.write(buffer, 0, len);
+                baos.write(buffer, 0, len);//從緩衝區讀取buffer裡面0~length-1的位置
             }
-            return baos.toByteArray();
+            return baos.toByteArray();//ByteArrayOutputStream轉成位元陣列,並回傳
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -105,6 +107,7 @@ public class Utils {
     public static String getGeoCodingUrl(String address){
         try {
             address = URLEncoder.encode(address, "utf-8");
+            //使用java.net.URLEncoder類別的靜態encode()方法作編碼的動作
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
