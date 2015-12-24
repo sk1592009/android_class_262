@@ -118,6 +118,16 @@ public class Utils {
         return url;
     }
 
+
+    public  static String getStaticMapUrl(double[] latLng, int zoom){
+        String center = latLng[0] + "," + latLng[1];
+        String url =
+                "https://maps.googleapis.com/maps/api/staticmap?center="+
+                        center + "&zoom=" + zoom + "&size=640x400" ;
+
+        return url;
+    }
+
     public static double[] getLatLngFromJsonString(String jsonString) {
         try {
             JSONObject object = new JSONObject(jsonString);

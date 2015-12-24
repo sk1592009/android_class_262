@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".SimpleUIApplication"
@@ -19,7 +20,9 @@
         <meta-data
             android:name="com.parse.CLIENT_KEY"
             android:value="36h8kEIy45DiWOaGye06bS2rApub2LzIgcNO2CY0" />
-
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBj78oeFS8JRWfXLy9cRD3TqtIWXLMAxL0" />
         <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
