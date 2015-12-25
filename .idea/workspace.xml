@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a61389a1-e2e1-43c2-8d7d-e68648f77878" name="Default" comment="" />
+    <list default="true" id="a61389a1-e2e1-43c2-8d7d-e68648f77878" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="android_class_262.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -36,8 +38,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="260" />
-    <option name="y" value="43" />
+    <option name="x" value="394" />
+    <option name="y" value="32" />
     <option name="width" value="1400" />
     <option name="height" value="939" />
   </component>
@@ -67,10 +69,10 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane />
       </pane>
+      <pane id="Scratches" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane" />
       <pane id="Scope" />
@@ -244,7 +246,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="260" y="43" width="1400" height="939" extended-state="0" />
+    <frame x="394" y="32" width="1400" height="939" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
