@@ -16,6 +16,17 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.jar.Manifest;
 
 public class OrderDetailActivity extends AppCompatActivity {
 
@@ -24,6 +35,10 @@ public class OrderDetailActivity extends AppCompatActivity {
     private ImageView staticMapImage;
     private Switch mapSwitch;
     private WebView staticMapWeb;
+
+    private GoogleMap googleMap;
+    private SupportMapFragment mapFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +63,15 @@ public class OrderDetailActivity extends AppCompatActivity {
             }
         });
 
+        mapFragment = (SupportMapFragment)
+                getSupportFragmentManager().findFragmentById(R.id.googleMap);
+//        googleMap = mapFragment.getMap();
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap map) {
+                googleMap = map;
+            }
+        });
         String note = getIntent().getStringExtra("note");
         String storeInfo = getIntent().getStringExtra("storeInfo");
 
@@ -120,6 +144,7 @@ public class OrderDetailActivity extends AppCompatActivity {
 //        }
 
         private String url;
+        private double[] latLng;
         @Override
         /*doInBackground(Params...)，後台線程執行onPreExecute()完後立即調用，
         這步被用於執行較長時間的後台計算。異步任務的參數也被傳到這步。
@@ -129,8 +154,9 @@ public class OrderDetailActivity extends AppCompatActivity {
             String address = params[0];
 //            return Utils.addressToLatLng(address);//原為 double[]
             //改成byte[]後,
-            double[] latLng = Utils.addressToLatLng(address);
+//            double[] latLng = Utils.addressToLatLng(address);
 //            String url = Utils.getStaticMapUrl(latLng, 17);//WebView在這沒辦法回傳,故改成以下並在上方宣告
+            latLng = Utils.addressToLatLng(address);
             url = Utils.getStaticMapUrl(latLng, 17);
             return Utils.urlToBytes(url);
         }
@@ -147,6 +173,28 @@ public class OrderDetailActivity extends AppCompatActivity {
             staticMapWeb.loadUrl(url);
             Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0,bytes.length);
             staticMapImage.setImageBitmap(bm);
+
+            LatLng storeAddress = new LatLng(latLng[0], latLng[1]);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(storeAddress, 17));
+
+            //顯示商店位置(旗子)
+            String[] storeInfo = getIntent().getStringExtra("storeInfo").split(",");
+            googleMap.addMarker(new MarkerOptions()
+                    .title(storeInfo[0])
+                    .snippet(storeInfo[1])
+                    .position(storeAddress));
+
+            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Toast.makeText(OrderDetailActivity.this, marker.getTitle(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+            //顯示自己的位置
+            //googleMap.setMyLocationEnabled(true);
+
+
         }
     }
 

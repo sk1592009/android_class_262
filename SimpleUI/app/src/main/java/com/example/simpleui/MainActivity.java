@@ -26,6 +26,14 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -60,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
     private String menuResult;
     private boolean hasPhoto = false;
     private List<ParseObject> queryResult;
+
+    private CallbackManager callbackManager;
+    private LoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +132,35 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         setHistory();
         setStoreInfo();//設定選單裡的資料
+        setupFacebook();
+    }
+
+    private void setupFacebook() {
+        callbackManager = CallbackManager.Factory.create();//拿到實體
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken token = loginResult.getAccessToken();
+                GraphRequest request = GraphRequest.newGraphPathRequest(token,
+                        "/v2.5/88103623857982?", new GraphRequest.Callback() {
+                            @Override
+                            public void onCompleted(GraphResponse graphResponse) {
+                                
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+
+            }
+        });
     }
 
     private void goToOrderDetail(int position) {
